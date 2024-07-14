@@ -7,6 +7,7 @@ import upload_icon from '../../assets/upload.png'
 import more_icon from '../../assets/more.png'
 import notification_icon from '../../assets/notification.png'
 import profile_icon from '../../assets/jack.png'
+
 function Navbar({setSidebarOpen}:{setSidebarOpen:React.Dispatch<React.SetStateAction<boolean>>}) {
   return (
     

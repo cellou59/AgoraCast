@@ -7,12 +7,12 @@ import upload_icon from '../../assets/upload.png'
 import more_icon from '../../assets/more.png'
 import notification_icon from '../../assets/notification.png'
 import profile_icon from '../../assets/jack.png'
-function Navbar() {
+function Navbar({setSidebarOpen}:{setSidebarOpen:React.Dispatch<React.SetStateAction<boolean>>}) {
   return (
     
     <nav className="flex-div">
         <div className="nav-left">
-            <img className='menu-icon' src={menu_icon} alt="" />
+            <img className='menu-icon' src={menu_icon} onClick={() =>setSidebarOpen((prev:boolean) => prev === false)} alt="" />
             <img className='logo' src={logo} alt="" />
         </div>
         <div className="nav-middle flex-div">
@@ -29,9 +29,6 @@ function Navbar() {
             <img src={profile_icon} className='user-icon'  alt="" />
         </div>
     </nav>
-
-
-    
   )
 }
 

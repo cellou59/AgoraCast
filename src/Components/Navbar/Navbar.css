@@ -7,6 +7,10 @@ nav{
     top:0;
     z-index: 10;
 }
+.flex-div {
+    display: flex;
+    align-items: center;
+}
 .nav-left .menu-icon{
     width: 22px;
     margin-right: 25px;
@@ -35,7 +39,7 @@ nav{
 }
 
 .nav-right img{
-    width: 25;
+    width: 25px;
     margin-right: 25px;
 }
 .nav-right .user-icon{

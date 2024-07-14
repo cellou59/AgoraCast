@@ -12,7 +12,7 @@ function Navbar({setSidebarOpen}:{setSidebarOpen:React.Dispatch<React.SetStateAc
   return (
     
     <nav className="flex-div">
-        <div className="nav-left">
+        <div className="nav-left flex-div">
             <img className='menu-icon' src={menu_icon} onClick={() =>setSidebarOpen((prev:boolean) => prev === false)} alt="" />
             <img className='logo' src={logo} alt="" />
         </div>

@@ -21,6 +21,11 @@ import cameron from '../../assets/cameron.png';
 import SideLink from '../SideLink/SideLink';
 import SubscribedLink from '../SubscribedLink/SubscribedLink';
 
+interface SidebarProps {
+    sidebarOpen: boolean;
+  }
+  
+
 const sidebarLinks = [
   { imgSrc: home, label: 'Home' },
   { imgSrc: game_icon, label: 'Games' },
@@ -41,7 +46,7 @@ const subscribedLinks = [
   { imgSrc: cameron, label: 'Nas daily' },
 ];
 
-const Sidebar: React.FC = ({sidebarOpen} : {sidebarOpen: boolean}) => {
+const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen }) => {
   return (
     <div className={`sidebar ${sidebarOpen ? "":"small-sidebar"}`}>
       <div className="shortcut-links">

@@ -1,4 +1,4 @@
-import React from 'react'
+//import React from 'react'
 import './Video.css'
 import PlayVideo from '../PlayVideo/PlayVideo'
 import Recommended from '../Recommended/Recommended'

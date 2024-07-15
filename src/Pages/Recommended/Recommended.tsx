@@ -1,53 +1,74 @@
-//import React from 'react'
-import './Recommended.css'
-import thumbnail1 from '../../assets/thumbnail1.png';
-import thumbnail2 from '../../assets/thumbnail2.png';
-import thumbnail3 from '../../assets/thumbnail3.png';
-import thumbnail4 from '../../assets/thumbnail4.png';
-import thumbnail5 from '../../assets/thumbnail5.png';
-import thumbnail6 from '../../assets/thumbnail6.png';
-import thumbnail7 from '../../assets/thumbnail7.png';
-import thumbnail8 from '../../assets/thumbnail8.png';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import {useNavigate } from 'react-router-dom';
+import './Recommended.css';
+import { API_KEY, value_converter } from '../../data';
+import moment from 'moment';
 
-interface CardProps {
-  id: number;  
-  thumbnail: string;
-  title: string;
-  channel: string;
-  views: string;
-  time: string;
+interface RecommendedProps {
+  categoryId: string;
 }
 
-const cards: CardProps[] = [
-  { id:1 ,thumbnail: thumbnail1, title: 'Best channel to learn that help you to be a web developer', channel: 'Greastack', views: '10k views', time: '2 days ago' },
-  { id:2 ,thumbnail: thumbnail2, title: 'Advanced React Techniques', channel: 'Code Evolution', views: '8k views', time: '3 days ago' },
-  { id:3 ,thumbnail: thumbnail3, title: 'JavaScript Best Practices', channel: 'JS Mastery', views: '12k views', time: '1 week ago' },
-  { id:4 ,thumbnail: thumbnail4, title: 'CSS Grid and Flexbox', channel: 'DesignCourse', views: '15k views', time: '4 days ago' },
-  { id:5 ,thumbnail: thumbnail5, title: 'Web Development Tools', channel: 'Traversy Media', views: '20k views', time: '5 days ago' },
-  { id:6 ,thumbnail: thumbnail6, title: 'Backend Development with Node.js', channel: 'Academind', views: '25k views', time: '6 days ago' },
-  { id:7 ,thumbnail: thumbnail7, title: 'Full-Stack Development Guide', channel: 'The Net Ninja', views: '30k views', time: '1 week ago' },
-  { id:8 ,thumbnail: thumbnail8, title: 'Understanding TypeScript', channel: 'Maximilian', views: '18k views', time: '3 days ago' },
-];
+interface Snippet {
+  title: string;
+  channelTitle: string;
+  publishedAt: string;
+  thumbnails: {
+    medium: {
+      url: string;
+    };
+  };
+  categoryId: string;
+}
 
-function Recommended() {
+interface Statistics {
+  viewCount: number;
+}
+
+interface VideoData {
+  id: string;
+  snippet: Snippet;
+  statistics: Statistics;
+}
+
+const Recommended: React.FC<RecommendedProps> = ({ categoryId }) => {
+  const [apiData, setApiData] = useState<VideoData[]>([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchVideoData = async () => {
+      const videoListUrl = `https://content-youtube.googleapis.com/youtube/v3/videos?videoCategoryId=${categoryId}&chart=mostPopular&regionCode=FR&part=snippet%2CcontentDetails%2Cstatistics&maxResults=50&key=${API_KEY}`;
+      const response = await fetch(videoListUrl);
+      const result = await response.json();
+      setApiData(result.items);
+    };
+    fetchVideoData();
+  }, [categoryId]);
+
+  const handleVideoClick = (categoryId: string, videoId: string) => {
+    navigate(`/video/${categoryId}/${videoId}`);
+  };
+
   return (
     <div className="recommended">
-        {cards.map((card, index) => (
-          <div key={index} className="side-video-list">
-          <Link to={`video/20/${card.id}`}  className='small-thumbnail'>
-            <img src={card.thumbnail} alt={card.title} />
-          </Link>
-            <div className="vid-info">
-              <h4>{card.title}</h4>
-              <p>{card.channel}</p>
-              <p>{card.views} &bull; {card.time}</p>
-            </div>
+      {apiData.map((card) => (
+        <div key={card.id} className="side-video-list" onClick={() => handleVideoClick(card.snippet.categoryId, card.id)}>
+          <div className='small-thumbnail'>
+            <img src={card.snippet.thumbnails.medium.url} alt={card.snippet.title} />
           </div>
-        ))}
-   
+          <div className="vid-info">
+            <h4>{card.snippet.title}</h4>
+            <p className='recommended-channel-title'>{card.snippet.channelTitle}</p>
+            <p className='recommended-views'>{card ? `${card? value_converter(card.statistics.viewCount):""} ` : ""} 
+              vues
+              &bull;
+              {` ${moment(card?.snippet.publishedAt).fromNow()}`}
+            </p>
+          </div>
+        </div>
+      ))}
     </div>
-  )
+  );
 }
 
-export default Recommended
+export default Recommended;
+

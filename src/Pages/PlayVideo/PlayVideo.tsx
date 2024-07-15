@@ -8,7 +8,6 @@ import { API_KEY, value_converter } from "../../data";
 import moment from "moment";
 
 interface PlayVideoProps {
-  categoryId: string;
   videoId: string;
 }
 
@@ -73,7 +72,7 @@ interface Comment {
   };
 }
 
-const PlayVideo: React.FC<PlayVideoProps> = ({ /*categoryId,*/ videoId }) => {
+const PlayVideo: React.FC<PlayVideoProps> = ({ videoId }) => {
   const [apiData, setApiData] = useState<VideoData | null>(null);
   const [channelData, setChannelData] = useState<ChannelData | null>(null);
   const [commentsData, setCommentsData] = useState<Comment[]>([]);
@@ -122,7 +121,7 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ /*categoryId,*/ videoId }) => {
       <h3>{apiData?.snippet.title}</h3>
       <div className="play-video-info">
         <>
-          {apiData? value_converter(apiData?.statistics.viewCount):""} vues &bull;{" "}
+          {apiData? value_converter(apiData?.statistics.viewCount):""} vues &bull;
           {moment(apiData?.snippet.publishedAt).fromNow()}
         </>
         <div>
@@ -155,7 +154,7 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ /*categoryId,*/ videoId }) => {
             {channelData? value_converter(channelData?.statistics.subscriberCount):""} abonnées
           </span>
         </div>
-        <button>Subscribe</button>
+        <button>S'abonner</button>
       </div>
       <div className="vid-description">
         <p>{apiData?.snippet.description}</p>

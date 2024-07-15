@@ -1,116 +1,189 @@
-//import React from "react";
+import React, { useEffect, useState } from "react";
 import "./PlayVideo.css";
-import video1 from "../../assets/video.mp4";
 import like from "../../assets/like.png";
 import dislike from "../../assets/dislike.png";
 import share from "../../assets/share.png";
 import save from "../../assets/save.png";
-import jack from "../../assets/jack.png";
-import user_profile from "../../assets/user_profile.jpg";
+import { API_KEY, value_converter } from "../../data";
+import moment from "moment";
 
-function PlayVideo() {
+interface PlayVideoProps {
+  categoryId: string;
+  videoId: string;
+}
+
+interface Snippet {
+  title: string;
+  channelId: string;
+  channelTitle: string;
+  publishedAt: string;
+  description: string;
+  thumbnails: {
+    default: {
+      url: string;
+    };
+  };
+}
+
+interface Statistics {
+  viewCount: number;
+  likeCount: number;
+  commentCount: number;
+}
+
+interface VideoData {
+  id: string;
+  snippet: Snippet;
+  statistics: Statistics;
+}
+
+interface ChannelSnippet {
+  thumbnails: {
+    default: {
+      url: string;
+    };
+  };
+}
+
+interface ChannelStatistics {
+  subscriberCount: number;
+}
+
+interface ChannelData {
+  snippet: ChannelSnippet;
+  statistics: ChannelStatistics;
+}
+
+interface CommentSnippet {
+  authorProfileImageUrl: string;
+  textDisplay: string;
+  likeCount: number;
+  publishedAt: string;
+  authorDisplayName: string;
+}
+
+interface TopLevelComment {
+  snippet: CommentSnippet;
+}
+
+interface Comment {
+  id: string;
+  snippet: {
+    topLevelComment: TopLevelComment;
+  };
+}
+
+const PlayVideo: React.FC<PlayVideoProps> = ({ /*categoryId,*/ videoId }) => {
+  const [apiData, setApiData] = useState<VideoData | null>(null);
+  const [channelData, setChannelData] = useState<ChannelData | null>(null);
+  const [commentsData, setCommentsData] = useState<Comment[]>([]);
+
+  useEffect(() => {
+    const fetchVideoData = async () => {
+      const videoListUrl = `https://youtube.googleapis.com/youtube/v3/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${videoId}&key=${API_KEY}`;
+      const response = await fetch(videoListUrl);
+      const result = await response.json();
+      setApiData(result.items[0]);
+    };
+    fetchVideoData();
+  }, [videoId]);
+
+  useEffect(() => {
+    const fetchChannelData = async () => {
+      if (apiData?.snippet.channelId) {
+        const channelListUrl = `https://youtube.googleapis.com/youtube/v3/channels?part=snippet%2CcontentDetails%2Cstatistics&id=${apiData.snippet.channelId}&key=${API_KEY}`;
+        const response = await fetch(channelListUrl);
+        const result = await response.json();
+        setChannelData(result.items[0]);
+      }
+    };
+    fetchChannelData();
+  }, [apiData]);
+
+  useEffect(() => {
+    const fetchCommentsData = async () => {
+      const commentsListUrl = `https://youtube.googleapis.com/youtube/v3/commentThreads?part=snippet%2Creplies&videoId=${videoId}&key=${API_KEY}`;
+      const response = await fetch(commentsListUrl);
+      const result = await response.json();
+      setCommentsData(result.items);
+    };
+    fetchCommentsData();
+  }, [videoId]);
+
   return (
     <div className="play-video">
-      <video src={video1} controls autoPlay muted></video>
-      <h3>Best channel to learn that help you to be a web developer</h3>
+      <iframe
+        src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerPolicy="strict-origin-when-cross-origin"
+        allowFullScreen
+      ></iframe>
+      <h3>{apiData?.snippet.title}</h3>
       <div className="play-video-info">
-        <p>10k views &bull; 2 days ago</p>
+        <>
+          {apiData? value_converter(apiData?.statistics.viewCount):""} vues &bull;{" "}
+          {moment(apiData?.snippet.publishedAt).fromNow()}
+        </>
         <div>
           <span>
             <img src={like} alt="" />
-            125
+            {apiData? value_converter(apiData?.statistics.likeCount): ""}
           </span>
 
           <span>
-            <img src={dislike} alt="" /> 25
+            <img src={dislike} alt="" />
           </span>
 
           <span>
-            <img src={share} alt="" />Share
+            <img src={share} alt="" />
+            Share
           </span>
 
           <span>
-            <img src={save} alt="" />Save
+            <img src={save} alt="" />
+            Save
           </span>
         </div>
       </div>
       <hr />
       <div className="publisher">
-        <img src={jack} alt="" />
-        <div className="">
-          <p>Greatstack</p>
-          <span>1M Subscribers</span>
+        <img src={channelData?.snippet.thumbnails.default.url} alt="" />
+        <div>
+          <p>{apiData?.snippet.channelTitle}</p>
+          <span>
+            {channelData? value_converter(channelData?.statistics.subscriberCount):""} abonnées
+          </span>
         </div>
         <button>Subscribe</button>
       </div>
       <div className="vid-description">
-        <p>Lorem ipsum dolor sit amet consectet?</p>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Dicta,
-          quisquam.
-        </p>
+        <p>{apiData?.snippet.description}</p>
         <hr />
-        <h3>130 comments</h3>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>
-              John Doe
-              <span>2 days ago</span>
-            </h3>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta,
-              quisquam.
-            </p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>25</span>
-              <img src={dislike} alt="" />
-              <span>5</span>
+        <h4>{apiData? value_converter(apiData?.statistics.commentCount):""} commentaire</h4>
+        {commentsData.map((comment, index) => (
+          <div key={index} className="comment">
+            <img
+              src={comment.snippet.topLevelComment.snippet.authorProfileImageUrl}
+              alt=""
+            />
+            <div>
+              <h3>
+              {comment.snippet.topLevelComment.snippet.authorDisplayName}
+                <span>{moment(comment.snippet.topLevelComment.snippet.publishedAt).fromNow()}</span>
+              </h3>
+              <p>{comment.snippet.topLevelComment.snippet.textDisplay}</p>
+              <div className="comment-action">
+                <img src={like} alt="" />
+                <span>{comment ? value_converter(comment.snippet.topLevelComment.snippet.likeCount):""}</span>
+                <img src={dislike} alt="" />
+              </div>
             </div>
           </div>
-        </div>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>
-              John Doe
-              <span>2 days ago</span>
-            </h3>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta,
-              quisquam.
-            </p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>25</span>
-              <img src={dislike} alt="" />
-              <span>5</span>
-            </div>
-          </div>
-        </div>
-        <div className="comment">
-          <img src={user_profile} alt="" />
-          <div>
-            <h3>
-              John Doe
-              <span>2 days ago</span>
-            </h3>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta,
-              quisquam.
-            </p>
-            <div className="comment-action">
-              <img src={like} alt="" />
-              <span>25</span>
-              <img src={dislike} alt="" />
-              <span>5</span>
-            </div>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
-}
+};
 
 export default PlayVideo;

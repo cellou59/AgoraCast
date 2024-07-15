@@ -21,10 +21,7 @@
     font-size: 13px;
     margin-bottom: 5px;
 }
-.vid-info p{
-    /* font-size: 13px;
-    margin-bottom: 5px; */
-}
+
 .recommended .recommended-views {
   font-size: 12px;
   font-weight: 400;
@@ -32,4 +29,16 @@
 .recommended .recommended-channel-title {
   font-size: 12px;
   font-weight: 400;
+}
+
+@media (max-width: 900px) {
+  .recommended {
+    flex-basis: 100%;
+  }
+  .side-video-list img {
+    width: 100%;
+  }
+  .side-video-list .small-thumbnail, .side-video-list .vid-info {
+    flex-basis: 100%;
+  }
 }

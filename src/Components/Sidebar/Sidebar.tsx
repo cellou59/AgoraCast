@@ -23,19 +23,21 @@ import SubscribedLink from '../SubscribedLink/SubscribedLink';
 
 interface SidebarProps {
     sidebarOpen: boolean;
+    category: number;
+    setCategory: React.Dispatch<React.SetStateAction<number>>;
   }
   
 
 const sidebarLinks = [
-  { imgSrc: home, label: 'Home' },
-  { imgSrc: game_icon, label: 'Games' },
-  { imgSrc: automobiles, label: 'Automobiles' },
-  { imgSrc: sports, label: 'Sports' },
-  { imgSrc: entertainment, label: 'Entertainment' },
-  { imgSrc: tech, label: 'Technology' },
-  { imgSrc: music, label: 'Music' },
-  { imgSrc: blogs, label: 'Blogs' },
-  { imgSrc: news, label: 'News' },
+  { id:0, imgSrc: home, label: 'Home' },
+  { id:20, imgSrc: game_icon, label: 'Games' },
+  { id:2, imgSrc: automobiles, label: 'Automobiles' },
+  { id:17, imgSrc: sports, label: 'Sports' },
+  { id:24, imgSrc: entertainment, label: 'Entertainment' },
+  { id:28, imgSrc: tech, label: 'Technology' },
+  { id:10, imgSrc: music, label: 'Music' },
+  { id:22, imgSrc: blogs, label: 'Blogs' },
+  { id:25, imgSrc: news, label: 'News' },
 ];
 
 const subscribedLinks = [
@@ -46,12 +48,12 @@ const subscribedLinks = [
   { imgSrc: cameron, label: 'Nas daily' },
 ];
 
-const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen }) => {
+const Sidebar: React.FC<SidebarProps> = ({ sidebarOpen, category, setCategory }) => {
   return (
     <div className={`sidebar ${sidebarOpen ? "":"small-sidebar"}`}>
       <div className="shortcut-links">
         {sidebarLinks.map((link, index) => (
-          <SideLink key={index} imgSrc={link.imgSrc} label={link.label} />
+          <SideLink key={index} category={category} setCategory={setCategory} id={link.id} imgSrc={link.imgSrc} label={link.label} />
         ))}
         <hr />
         <div className="subscribed-list">

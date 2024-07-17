@@ -17,11 +17,15 @@ nav{
 }
 
 .nav-left .logo{
-    width: 130px;
+    width: 45px;
+    border-radius: 50%;
+}
+.nav-left .logo_name{
+    width: 100px;
 }
 
 .nav-middle .search-box{
-    border: 1px solid #ccc;
+    border: 1px solid #B99650;
     margin-right: 15px;
     padding: 8px 12px;
     border-radius: 25px;

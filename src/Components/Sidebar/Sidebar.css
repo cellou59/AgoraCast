@@ -43,7 +43,7 @@
 }
 .side-link.active img{
     padding-bottom: 2px;
-    border-bottom: 3px solid red;
+    border-bottom: 3px solid #B99650;
 }
 
 @media (max-width: 900px){

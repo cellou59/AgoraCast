@@ -8,6 +8,7 @@ import search_icon from "../../assets/search.png";
 import notification_icon from "../../assets/notification.png";
 import profile_icon from "../../assets/jack.png";
 import { Link } from "react-router-dom";
+// import Counter from "../Counter";
 
 function Navbar({
   setSidebarOpen,
@@ -36,6 +37,7 @@ function Navbar({
       </div>
       <div className="nav-right flex-div">
         <img src={notification_icon} alt="" />
+        {/* <Counter />  */}
         <WalletMultiButton />
         <img src={profile_icon} className="user-icon" alt="" />
       </div>

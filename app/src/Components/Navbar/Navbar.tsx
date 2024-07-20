@@ -1,4 +1,5 @@
 import React from "react";
+import { WalletMultiButton} from "@solana/wallet-adapter-react-ui";
 import "./Navbar.css";
 import menu_icon from "../../assets/menu.png";
 import logo from "../../assets/logo_sm.png";
@@ -35,6 +36,7 @@ function Navbar({
       </div>
       <div className="nav-right flex-div">
         <img src={notification_icon} alt="" />
+        <WalletMultiButton />
         <img src={profile_icon} className="user-icon" alt="" />
       </div>
     </nav>

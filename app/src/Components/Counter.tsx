@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+// import { useEffect, useState } from "react";
 // import { useConnection } from "@solana/wallet-adapter-react";
 // import { program, counterPDA, CounterData } from "../anchor/setup";
 

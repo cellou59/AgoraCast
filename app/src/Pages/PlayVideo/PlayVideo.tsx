@@ -6,6 +6,7 @@ import share from "../../assets/share.png";
 import save from "../../assets/save.png";
 import { API_KEY, value_converter } from "../../data";
 import moment from "moment";
+import { rewardContentCreator } from "../../utils/program"; // Import the reward function
 
 interface PlayVideoProps {
   videoId: string;
@@ -72,6 +73,11 @@ interface Comment {
   };
 }
 
+const CHANNEL_CREATORS: Record<string, string> = {
+  // Mapping from channelId to public key for reward
+  // For example: "UC_x5XG1OV2v5, "5AKHumTEkTQwT5wrFFEK336pptKWqH1JV4wSjKqC8zG7"
+};
+
 const PlayVideo: React.FC<PlayVideoProps> = ({ videoId }) => {
   const [apiData, setApiData] = useState<VideoData | null>(null);
   const [channelData, setChannelData] = useState<ChannelData | null>(null);
@@ -109,6 +115,20 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ videoId }) => {
     fetchCommentsData();
   }, [videoId]);
 
+  // const handleLike = async () => {
+  //   const channelId = apiData?.snippet.channelId;
+  //   if (channelId && CHANNEL_CREATORS[channelId]) {
+  //     try {
+  //       // Reward the content creator with 0.01 SOL
+  //       await rewardContentCreator(0.01, CHANNEL_CREATORS[channelId]);
+  //     } catch (err) {
+  //       console.error("Error rewarding content creator:", err);
+  //     }
+  //   } else {
+  //     console.error("Content creator's public key not found.");
+  //   }
+  // };
+
   return (
     <div className="play-video">
       <iframe
@@ -121,13 +141,13 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ videoId }) => {
       <h3>{apiData?.snippet.title}</h3>
       <div className="play-video-info">
         <>
-          {apiData? value_converter(apiData?.statistics.viewCount):""} vues &bull;
+          {apiData ? value_converter(apiData?.statistics.viewCount) : ""} vues &bull;
           {moment(apiData?.snippet.publishedAt).fromNow()}
         </>
         <div>
           <span>
             <img src={like} alt="" />
-            {apiData? value_converter(apiData?.statistics.likeCount): ""}
+            {apiData ? value_converter(apiData?.statistics.likeCount) : ""}
           </span>
 
           <span>
@@ -151,7 +171,7 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ videoId }) => {
         <div>
           <p>{apiData?.snippet.channelTitle}</p>
           <span>
-            {channelData? value_converter(channelData?.statistics.subscriberCount):""} abonnées
+            {channelData ? value_converter(channelData?.statistics.subscriberCount) : ""} abonnées
           </span>
         </div>
         <button>S'abonner</button>
@@ -159,7 +179,7 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ videoId }) => {
       <div className="vid-description">
         <p>{apiData?.snippet.description}</p>
         <hr />
-        <h4>{apiData? value_converter(apiData?.statistics.commentCount):""} commentaire</h4>
+        <h4>{apiData ? value_converter(apiData?.statistics.commentCount) : ""} commentaire</h4>
         {commentsData.map((comment, index) => (
           <div key={index} className="comment">
             <img
@@ -168,13 +188,13 @@ const PlayVideo: React.FC<PlayVideoProps> = ({ videoId }) => {
             />
             <div>
               <h3>
-              {comment.snippet.topLevelComment.snippet.authorDisplayName}
+                {comment.snippet.topLevelComment.snippet.authorDisplayName}
                 <span>{moment(comment.snippet.topLevelComment.snippet.publishedAt).fromNow()}</span>
               </h3>
               <p>{comment.snippet.topLevelComment.snippet.textDisplay}</p>
               <div className="comment-action">
                 <img src={like} alt="" />
-                <span>{comment ? value_converter(comment.snippet.topLevelComment.snippet.likeCount):""}</span>
+                <span>{comment ? value_converter(comment.snippet.topLevelComment.snippet.likeCount) : ""}</span>
                 <img src={dislike} alt="" />
               </div>
             </div>
